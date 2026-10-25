@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Admin Dashboard - Eco Fusion 360</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #07120d;
+    color: white;
+}
+
+.navbar {
+    background: #10291b;
+    padding: 18px 4%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    color: #72ff9f;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.logout {
+    color: white;
+    text-decoration: none;
+    background: #8d2929;
+    padding: 10px 16px;
+    border-radius: 8px;
+}
+
+.container {
+    padding: 30px 4%;
+}
+
+.header {
+    background: linear-gradient(135deg, #145e34, #09281a);
+    padding: 30px;
+    border-radius: 20px;
+}
+
+.header h1 {
+    color: #78ffa1;
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 18px;
+    margin-top: 25px;
+}
+
+.stat {
+    background: #10291b;
+    padding: 22px;
+    border-radius: 15px;
+    text-align: center;
+}
+
+.stat h2 {
+    color: #72ff9f;
+}
+
+.stat-number {
+    font-size: 32px;
+    font-weight: bold;
+}
+
+.section {
+    background: #10291b;
+    margin-top: 25px;
+    padding: 25px;
+    border-radius: 18px;
+    overflow-x: auto;
+}
+
+.section h2 {
+    color: #72ff9f;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 900px;
+}
+
+th,
+td {
+    padding: 12px;
+    border-bottom: 1px solid #294b36;
+    text-align: left;
+}
+
+th {
+    color: #72ff9f;
+}
+
+button,
+.action-button {
+    background: #159b4a;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 7px;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+button:hover,
+.action-button:hover {
+    background: #21c763;
+}
+
+.danger {
+    background: #9b3030;
+}
+
+.warning {
+    background: #80641e;
+}
+
+input,
+select,
+textarea {
+    width: 100%;
+    padding: 10px;
+    margin-top: 7px;
+    margin-bottom: 12px;
+    border-radius: 7px;
+    border: none;
+}
+
+.form-small {
+    max-width: 450px;
+}
+
+.message {
+    background: #163824;
+    padding: 15px;
+    border-radius: 10px;
+    margin-top: 12px;
+}
+
+.badge {
+    padding: 6px 9px;
+    border-radius: 7px;
+    background: #245c39;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<nav class="navbar">
+
+    <div class="logo">
+        🔐 Eco Fusion 360 Admin
+    </div>
+
+    <a class="logout" href="{{ url_for('logout') }}">
+        Logout
+    </a>
+
+</nav>
+
+<div class="container">
+
+    <div class="header">
+
+        <h1>
+            🛠️ Admin Control Center
+        </h1>
+
+        <p>
+            Manage Eco Fusion 360 users, coordinators,
+            recycling activity, messages and quizzes.
+        </p>
+
+    </div>
+
+
+    <!-- STATISTICS -->
+
+    <div class="stats">
+
+        <div class="stat">
+
+            <h2>👥 Users</h2>
+
+            <div class="stat-number">
+                {{ total_users }}
+            </div>
+
+        </div>
+
+        <div class="stat">
+
+            <h2>♻️ Submissions</h2>
+
+            <div class="stat-number">
+                {{ total_submissions }}
+            </div>
+
+        </div>
+
+        <div class="stat">
+
+            <h2>💬 Unread</h2>
+
+            <div class="stat-number">
+                {{ unread_messages }}
+            </div>
+
+        </div>
+
+        <div class="stat">
+
+            <h2>❤️ Feedback</h2>
+
+            <div class="stat-number">
+                {{ total_feedback }}
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- USERS -->
+
+    <div class="section">
+
+        <h2>👥 All Users</h2>
+
+        {% if users %}
+
+        <table>
+
+            <tr>
+
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Center</th>
+                <th>District</th>
+                <th>Approved</th>
+                <th>Created</th>
+
+            </tr>
+
+            {% for user in users %}
+
+            <tr>
+
+                <td>{{ user["id"] }}</td>
+
+                <td>{{ user["full_name"] }}</td>
+
+                <td>{{ user["email"] }}</td>
+
+                <td>
+                    <span class="badge">
+                        {{ user["role"] }}
+                    </span>
+                </td>
+
+                <td>
+                    {{ user["recycle_center_name"] or "-" }}
+                </td>
+
+                <td>
+                    {{ user["district"] or "-" }}
+                </td>
+
+                <td>
+
+                    {% if user["approved"] == 1 %}
+                        ✅
+                    {% else %}
+                        ⏳
+                    {% endif %}
+
+                </td>
+
+                <td>
+                    {{ user["created_at"] }}
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </table>
+
+        {% else %}
+
+        <p>No users found.</p>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- GREEN TOKENS -->
+
+    <div class="section">
+
+        <h2>🟢 Manage Green Tokens</h2>
+
+        <p>
+            Increase or decrease a user's Green Tokens.
+        </p>
+
+        <form
+            class="form-small"
+            method="POST"
+            action="{{ url_for('admin_tokens') }}"
+        >
+
+            <label>User Email</label>
+
+            <input
+                type="email"
+                name="email"
+                placeholder="user@example.com"
+                required
+            >
+
+            <label>Token Amount</label>
+
+            <input
+                type="number"
+                name="amount"
+                placeholder="Example: 100 or -50"
+                required
+            >
+
+            <button type="submit">
+                🟢 Update Tokens
+            </button>
+
+        </form>
+
+    </div>
+
+
+    <!-- COORDINATORS -->
+
+    <div class="section">
+
+        <h2>🏢 Coordinator Management</h2>
+
+        {% if coordinators %}
+
+        <table>
+
+            <tr>
+
+                <th>Name</th>
+                <th>Email</th>
+                <th>Center</th>
+                <th>Center ID</th>
+                <th>District</th>
+                <th>Mobile</th>
+                <th>Status</th>
+                <th>Action</th>
+
+            </tr>
+
+            {% for coordinator in coordinators %}
+
+            <tr>
+
+                <td>
+                    {{ coordinator["full_name"] }}
+                </td>
+
+                <td>
+                    {{ coordinator["email"] }}
+                </td>
+
+                <td>
+                    {{ coordinator["recycle_center_name"] or "-" }}
+                </td>
+
+                <td>
+                    {{ coordinator["recycle_center_id"] or "-" }}
+                </td>
+
+                <td>
+                    {{ coordinator["district"] or "-" }}
+                </td>
+
+                <td>
+                    {{ coordinator["mobile"] or "-" }}
+                </td>
+
+                <td>
+
+                    {% if coordinator["approved"] == 1 %}
+
+                        ✅ Approved
+
+                    {% else %}
+
+                        ⏳ Pending
+
+                    {% endif %}
+
+                </td>
+
+                <td>
+
+                    {% if coordinator["approved"] == 0 %}
+
+                    <a
+                        class="action-button"
+                        href="{{ url_for('approve_coordinator', user_id=coordinator['id']) }}"
+                    >
+                        Approve
+                    </a>
+
+                    {% else %}
+
+                    <a
+                        class="action-button danger"
+                        href="{{ url_for('reject_coordinator', user_id=coordinator['id']) }}"
+                    >
+                        Disable
+                    </a>
+
+                    {% endif %}
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </table>
+
+        {% else %}
+
+        <p>
+            No coordinator accounts found.
+        </p>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- RECYCLING -->
+
+    <div class="section">
+
+        <h2>♻️ Recycling Submissions</h2>
+
+        {% if submissions %}
+
+        <table>
+
+            <tr>
+
+                <th>ID</th>
+                <th>User</th>
+                <th>Plastic</th>
+                <th>Process</th>
+                <th>Weight</th>
+                <th>Center</th>
+                <th>Status</th>
+                <th>Date</th>
+
+            </tr>
+
+            {% for item in submissions %}
+
+            <tr>
+
+                <td>{{ item["id"] }}</td>
+
+                <td>{{ item["email"] }}</td>
+
+                <td>{{ item["plastic_type"] }}</td>
+
+                <td>{{ item["process"] }}</td>
+
+                <td>{{ item["weight_kg"] }} kg</td>
+
+                <td>{{ item["recycle_center"] }}</td>
+
+                <td>{{ item["status"] }}</td>
+
+                <td>{{ item["submitted_at"] }}</td>
+
+            </tr>
+
+            {% endfor %}
+
+        </table>
+
+        {% else %}
+
+        <p>No recycling submissions.</p>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- MESSAGES -->
+
+    <div class="section">
+
+        <h2>💬 User Messages</h2>
+
+        {% if messages %}
+
+        {% for message in messages %}
+
+        <div class="message">
+
+            <strong>
+                {{ message["user_email"] }}
+            </strong>
+
+            <p>
+                <b>{{ message["subject"] or "No Subject" }}</b>
+            </p>
+
+            <p>
+                {{ message["message"] }}
+            </p>
+
+            {% if message["reply"] %}
+
+            <p>
+                <b>Reply:</b>
+                {{ message["reply"] }}
+            </p>
+
+            {% else %}
+
+            <form
+                method="POST"
+                action="{{ url_for('admin_reply') }}"
+            >
+
+                <input
+                    type="hidden"
+                    name="message_id"
+                    value="{{ message['id'] }}"
+                >
+
+                <textarea
+                    name="reply"
+                    rows="3"
+                    placeholder="Write reply..."
+                    required
+                ></textarea>
+
+                <button type="submit">
+                    Reply
+                </button>
+
+            </form>
+
+            {% endif %}
+
+        </div>
+
+        {% endfor %}
+
+        {% else %}
+
+        <p>No messages.</p>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- FEEDBACK -->
+
+    <div class="section">
+
+        <h2>❤️ User Feedback</h2>
+
+        {% if feedback %}
+
+        {% for item in feedback %}
+
+        <div class="message">
+
+            <strong>
+                {{ item["email"] }}
+            </strong>
+
+            <p>
+                Rating:
+                {{ item["rating"] }}/5
+            </p>
+
+            <p>
+                {{ item["message"] }}
+            </p>
+
+            <small>
+                {{ item["created_at"] }}
+            </small>
+
+        </div>
+
+        {% endfor %}
+
+        {% else %}
+
+        <p>No feedback yet.</p>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- QUIZ MANAGEMENT -->
+
+    <div class="section">
+
+        <h2>🧠 Quiz Management</h2>
+
+        <form
+            class="form-small"
+            method="POST"
+            action="{{ url_for('add_quiz') }}"
+        >
+
+            <label>Question</label>
+
+            <textarea
+                name="question"
+                rows="3"
+                required
+            ></textarea>
+
+            <label>Option A</label>
+
+            <input
+                name="option_a"
+                required
+            >
+
+            <label>Option B</label>
+
+            <input
+                name="option_b"
+                required
+            >
+
+            <label>Option C</label>
+
+            <input
+                name="option_c"
+                required
+            >
+
+            <label>Option D</label>
+
+            <input
+                name="option_d"
+                required
+            >
+
+            <label>Correct Answer</label>
+
+            <select name="correct_answer">
+
+                <option value="A">A</option>
+                <option value="B">B</option>
+                <option value="C">C</option>
+                <option value="D">D</option>
+
+            </select>
+
+            <button type="submit">
+                ➕ Add Question
+            </button>
+
+        </form>
+
+
+        {% if quiz_questions %}
+
+        <h3>Existing Questions</h3>
+
+        <table>
+
+            <tr>
+
+                <th>ID</th>
+                <th>Question</th>
+                <th>Correct</th>
+                <th>Action</th>
+
+            </tr>
+
+            {% for question in quiz_questions %}
+
+            <tr>
+
+                <td>
+                    {{ question["id"] }}
+                </td>
+
+                <td>
+                    {{ question["question"] }}
+                </td>
+
+                <td>
+                    {{ question["correct_answer"] }}
+                </td>
+
+                <td>
+
+                    <a
+                        class="action-button danger"
+                        href="{{ url_for('delete_quiz', question_id=question['id']) }}"
+                    >
+                        Delete
+                    </a>
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </table>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+</body>
+</html>

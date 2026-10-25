@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Login</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            background: #090d16;
+            color: white;
+            text-align: center;
+            padding: 70px;
+        }
+
+        .box {
+            max-width: 430px;
+            margin: auto;
+            background: #171d2b;
+            padding: 35px;
+            border-radius: 18px;
+            border: 1px solid #39435c;
+        }
+
+        input {
+            width: 100%;
+            padding: 13px;
+            margin: 10px 0;
+            box-sizing: border-box;
+            border-radius: 8px;
+            border: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 13px;
+            background: #5c8cff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        .error {
+            color: #ff7777;
+        }
+
+        a {
+            color: #83aaff;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="box">
+
+    <h1>🔐 Admin Login</h1>
+
+    <p>Eco Fusion 360 Administration</p>
+
+    {% if error %}
+        <p class="error">{{ error }}</p>
+    {% endif %}
+
+    <form method="POST">
+
+        <input
+            type="email"
+            name="email"
+            placeholder="Admin Email"
+            required
+        >
+
+        <input
+            type="password"
+            name="password"
+            placeholder="Admin Password"
+            required
+        >
+
+        <button type="submit">
+            Admin Login
+        </button>
+
+    </form>
+
+    <p>
+        <a href="{{ url_for('home') }}">
+            ← Home
+        </a>
+    </p>
+
+</div>
+
+</body>
+</html>

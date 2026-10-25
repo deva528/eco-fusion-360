@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Eco Fusion 360 | Plastic Submission</title>
+<style>
+:root{--bg:#06140e;--panel:#0d2519;--panel2:#123523;--green:#39ff88;--muted:#b8d8c5;--border:#285b3d;--red:#ff7777;--blue:#2196f3}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;font-family:Arial,Helvetica,sans-serif;background:radial-gradient(circle at top,#123d26 0,#06140e 50%,#030a07 100%);color:#f3fff7}
+.container{width:min(1000px,94%);margin:auto;padding:28px 0 50px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:22px}
+.brand{font-weight:800;font-size:clamp(20px,4vw,28px);color:var(--green)}
+.link{display:inline-block;text-decoration:none;color:#f3fff7;border:1px solid var(--border);background:#0a1d14;padding:10px 14px;border-radius:10px}
+h1{text-align:center;color:var(--green);margin:18px 0 8px}
+.subtitle{text-align:center;color:var(--muted);line-height:1.6;margin:0 auto 25px;max-width:700px}
+.card{background:rgba(255,255,255,.055);border:1px solid rgba(57,255,136,.25);border-radius:20px;padding:clamp(16px,4vw,28px);box-shadow:0 15px 40px #0004}
+.instruction{padding:14px 16px;border-radius:12px;background:#39ff8812;color:#d3ffe2;line-height:1.75;margin-bottom:18px}
+.camera-box{width:100%;max-width:720px;margin:18px auto;background:#000;border:1px solid #285b3d;border-radius:15px;overflow:hidden;min-height:260px;display:flex;align-items:center;justify-content:center}
+video,#capturedImage{width:100%;max-height:480px;object-fit:contain;display:none}
+.placeholder{padding:35px 15px;text-align:center;color:#aaa;line-height:1.7}
+.buttons{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin:18px 0}
+button{border:0;border-radius:10px;padding:13px 18px;font-size:15px;font-weight:700;cursor:pointer;transition:transform .15s}
+button:hover{transform:translateY(-1px)}button:disabled{opacity:.45;cursor:not-allowed;transform:none}
+.primary{background:var(--green);color:#062012}.yellow{background:#ffc107;color:#222}.orange{background:#ff7043;color:white}.blue{background:var(--blue);color:white}.gray{background:#444;color:white}
+.status{min-height:26px;text-align:center;margin:14px 0;font-weight:600;line-height:1.5}.success{color:var(--green)}.error{color:var(--red)}
+.form-section{margin-top:26px;border-top:1px solid var(--border);padding-top:24px}
+h2{font-size:21px;margin:0 0 10px;color:var(--green)}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:18px}
+.field{display:flex;flex-direction:column;gap:8px;text-align:left}.field.full{grid-column:1/-1}
+label{font-weight:700;color:#e8fff0}
+input,select{width:100%;padding:13px 12px;border-radius:10px;border:1px solid #2d6242;background:#071a11;color:#f3fff7;font-size:15px;outline:none}
+input:focus,select:focus{border-color:var(--green)}
+.hint{color:var(--muted);font-size:13px;line-height:1.5}
+.submit-row{text-align:center;margin-top:22px}
+#submitBtn{min-width:min(100%,300px);font-size:16px}
+.success-banner{padding:14px 16px;margin:0 0 18px;border-radius:12px;background:#123b25;border:1px solid #39ff8870;color:#d8ffe5;line-height:1.6}
+.warning{padding:13px 15px;border-radius:10px;background:#ffc10714;color:#ffe8a3;margin-top:15px;line-height:1.5}
+@media(max-width:650px){.grid{grid-template-columns:1fr}.field.full{grid-column:auto}.camera-box{min-height:220px}.container{padding-top:16px}}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="top">
+    <div class="brand">🌍 Eco Fusion 360</div>
+    <a class="link" href="{{ url_for('dashboard') }}">← Dashboard</a>
+  </div>
+
+  <h1>📷 Plastic Camera & Submission</h1>
+  <p class="subtitle">Capture a clear photo, confirm the plastic details, and send your recycling submission to an approved recycling-centre coordinator.</p>
+
+  {% if success_message %}
+  <div class="success-banner">✅ {{ success_message }}</div>
+  {% endif %}
+
+  <div class="card">
+    <div class="instruction">
+      <strong>Before submitting</strong><br>
+      1. Allow camera access and capture the actual plastic item.<br>
+      2. Wait until the photo is saved successfully.<br>
+      3. Confirm the plastic type, process, weight, and coordinator.<br>
+      4. Press <strong>Submit to Coordinator</strong>. Your submission will appear as <strong>Pending</strong> until reviewed.
+    </div>
+
+    <div class="camera-box">
+      <div id="cameraPlaceholder" class="placeholder">📷 Camera is off<br>Press “Open Camera” to begin.</div>
+      <video id="video" autoplay playsinline></video>
+      <img id="capturedImage" alt="Captured plastic item">
+    </div>
+    <canvas id="canvas" style="display:none"></canvas>
+
+    <div class="buttons">
+      <button type="button" id="openCameraBtn" class="primary">📷 Open Camera</button>
+      <button type="button" id="captureBtn" class="yellow" style="display:none">📸 Capture Photo</button>
+      <button type="button" id="retakeBtn" class="orange" style="display:none">🔄 Retake Photo</button>
+    </div>
+    <div id="status" class="status" role="status" aria-live="polite"></div>
+
+    <form id="submissionForm" method="POST" action="{{ url_for('submit_plastic') }}">
+      <div class="form-section">
+        <h2>♻️ Submission details</h2>
+        <p class="hint">Plastic type and processing method may be filled from your identification result. Please check them before submitting.</p>
+
+        <div class="grid">
+          <div class="field">
+            <label for="plastic_type">Identified plastic type</label>
+            <select id="plastic_type" name="plastic_type" required>
+              <option value="">Select plastic type</option>
+              <option value="PET">PET</option>
+              <option value="HDPE">HDPE</option>
+              <option value="PVC">PVC</option>
+              <option value="LDPE">LDPE</option>
+              <option value="PP">PP</option>
+              <option value="PS">PS</option>
+              <option value="PC">PC</option>
+              <option value="ABS">ABS</option>
+              <option value="PLA">PLA</option>
+              <option value="PC/ABS/PLA">PC / ABS / PLA</option>
+              <option value="Mixed">Mixed plastic</option>
+              <option value="Unknown">Unknown / not sure</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="process">Processing method</label>
+            <select id="process" name="process" required>
+              <option value="">Select method</option>
+              <option value="Pyrolysis">Pyrolysis</option>
+              <option value="Cryolysis">Cryolysis</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="weight_kg">Plastic weight (kg)</label>
+            <input id="weight_kg" name="weight_kg" type="number" min="0.01" max="10000" step="0.01" placeholder="e.g. 0.25" required>
+            <span class="hint">Enter the measured weight in kilograms. Example: 250 grams = 0.25 kg.</span>
+          </div>
+
+          <div class="field">
+            <label for="coordinator_email">Recycling centre coordinator</label>
+            <select id="coordinator_email" name="coordinator_email" required>
+              <option value="">Choose an approved centre</option>
+              {% for c in coordinators %}
+              <option value="{{ c['email'] }}">
+                {{ c['recycle_center_name'] or c['full_name'] }}{% if c['district'] %} — {{ c['district'] }}{% endif %}
+              </option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+
+        {% if not coordinators %}
+        <div class="warning">No approved recycling-centre coordinators are available yet. An administrator must approve a coordinator before you can submit to a centre.</div>
+        {% endif %}
+
+        <div class="submit-row">
+          <button type="submit" id="submitBtn" class="primary" disabled>📨 Submit to Coordinator</button>
+          <p class="hint">The submit button becomes available after the photo is saved.</p>
+        </div>
+      </div>
+    </form>
+
+    <div class="buttons">
+      <a class="link" href="{{ url_for('plastic_identification') }}">← Back to Plastic Identification</a>
+    </div>
+  </div>
+</div>
+
+<script>
+let stream = null;
+let capturedPhotoPath = null;
+let photoSaving = false;
+
+const video = document.getElementById("video");
+const placeholder = document.getElementById("cameraPlaceholder");
+const capturedImage = document.getElementById("capturedImage");
+const statusBox = document.getElementById("status");
+const openBtn = document.getElementById("openCameraBtn");
+const captureBtn = document.getElementById("captureBtn");
+const retakeBtn = document.getElementById("retakeBtn");
+const submitBtn = document.getElementById("submitBtn");
+
+function setStatus(message, kind) {
+  statusBox.textContent = message;
+  statusBox.className = "status " + (kind || "");
+}
+
+async function openCamera() {
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    setStatus("Camera access is unavailable. Open this website through localhost or HTTPS and try again.", "error");
+    return;
+  }
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: { ideal: "environment" } },
+      audio: false
+    });
+    video.srcObject = stream;
+    video.style.display = "block";
+    capturedImage.style.display = "none";
+    placeholder.style.display = "none";
+    openBtn.style.display = "none";
+    captureBtn.style.display = "inline-block";
+    retakeBtn.style.display = "none";
+    setStatus("Camera ready. Place the plastic item in view.", "success");
+  } catch (error) {
+    console.error(error);
+    setStatus("Camera permission was denied or the camera is unavailable. Allow camera access and try again.", "error");
+  }
+}
+
+function stopCamera() {
+  if (stream) {
+    stream.getTracks().forEach(track => track.stop());
+    stream = null;
+  }
+}
+
+async function capturePhoto() {
+  if (!video.videoWidth || !video.videoHeight) {
+    setStatus("Camera is still starting. Please wait a moment and try again.", "error");
+    return;
+  }
+  const canvas = document.getElementById("canvas");
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+  canvas.getContext("2d").drawImage(video, 0, 0, canvas.width, canvas.height);
+  const imageData = canvas.toDataURL("image/jpeg", 0.88);
+
+  capturedImage.src = imageData;
+  capturedImage.style.display = "block";
+  video.style.display = "none";
+  stopCamera();
+  captureBtn.style.display = "none";
+  retakeBtn.style.display = "inline-block";
+  submitBtn.disabled = true;
+  capturedPhotoPath = null;
+  photoSaving = true;
+  setStatus("Photo captured. Saving it to Eco Fusion 360…", "");
+
+  try {
+    const response = await fetch("{{ url_for('capture_plastic_photo') }}", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ image: imageData })
+    });
+    const result = await response.json();
+    if (!response.ok || !result.success) {
+      throw new Error(result.message || "Photo could not be saved.");
+    }
+    capturedPhotoPath = result.photo_path;
+    sessionStorage.setItem("plasticPhotoPath", capturedPhotoPath);
+    submitBtn.disabled = false;
+    setStatus("✅ Photo saved successfully. Complete the details and submit below.", "success");
+  } catch (error) {
+    console.error(error);
+    setStatus("❌ " + (error.message || "Could not upload the photo.") + " Please retake it and try again.", "error");
+  } finally {
+    photoSaving = false;
+  }
+}
+
+function retakePhoto() {
+  capturedPhotoPath = null;
+  sessionStorage.removeItem("plasticPhotoPath");
+  capturedImage.removeAttribute("src");
+  capturedImage.style.display = "none";
+  placeholder.style.display = "block";
+  retakeBtn.style.display = "none";
+  openBtn.style.display = "inline-block";
+  submitBtn.disabled = true;
+  setStatus("Capture a new photo before submitting.", "");
+}
+
+openBtn.addEventListener("click", openCamera);
+captureBtn.addEventListener("click", capturePhoto);
+retakeBtn.addEventListener("click", retakePhoto);
+
+document.getElementById("submissionForm").addEventListener("submit", function(event) {
+  if (!capturedPhotoPath || photoSaving) {
+    event.preventDefault();
+    setStatus("Please capture a photo and wait until it is saved before submitting.", "error");
+    return;
+  }
+  submitBtn.disabled = true;
+  submitBtn.textContent = "Sending submission…";
+});
+
+document.addEventListener("DOMContentLoaded", function() {
+  const savedType = sessionStorage.getItem("ecoPlasticType");
+  const savedProcess = sessionStorage.getItem("ecoPlasticProcess");
+  if (savedType) {
+    const typeSelect = document.getElementById("plastic_type");
+    if ([...typeSelect.options].some(option => option.value === savedType)) typeSelect.value = savedType;
+  }
+  if (savedProcess) document.getElementById("process").value = savedProcess;
+});
+
+window.addEventListener("beforeunload", stopCamera);
+</script>
+</body>
+</html>

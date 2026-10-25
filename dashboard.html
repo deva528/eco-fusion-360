@@ -1,0 +1,1805 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Eco Fusion 360 | Dashboard</title>
+
+<style>
+
+    /* ==============================
+       GLOBAL
+    ============================== */
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    :root {
+        --bg: #04130c;
+        --bg2: #082617;
+        --sidebar: #061a10;
+        --card: rgba(15, 58, 34, 0.75);
+        --green: #39ff88;
+        --green-dark: #18a957;
+        --text: #ffffff;
+        --muted: #9db9a7;
+        --border: rgba(92, 255, 151, 0.18);
+    }
+
+    html {
+        scroll-behavior: smooth;
+    }
+
+    body {
+        font-family: Arial, Helvetica, sans-serif;
+        background:
+            radial-gradient(circle at top right, #145b35 0%, transparent 30%),
+            radial-gradient(circle at bottom left, #0d3d25 0%, transparent 25%),
+            linear-gradient(135deg, var(--bg), var(--bg2));
+        color: var(--text);
+        min-height: 100vh;
+        overflow-x: hidden;
+    }
+
+
+    /* ==============================
+       SIDEBAR
+    ============================== */
+
+    .sidebar {
+        width: 260px;
+        height: 100vh;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 1000;
+
+        background: rgba(5, 23, 13, 0.97);
+        border-right: 1px solid var(--border);
+
+        display: flex;
+        flex-direction: column;
+
+        transition: width 0.35s ease;
+        overflow: hidden;
+    }
+
+    .sidebar.collapsed {
+        width: 82px;
+    }
+
+
+    /* ==============================
+       LOGO
+    ============================== */
+
+    .sidebar-logo {
+        height: 82px;
+        display: flex;
+        align-items: center;
+        gap: 13px;
+        padding: 0 18px;
+        border-bottom: 1px solid var(--border);
+        white-space: nowrap;
+    }
+
+    .logo-circle {
+        min-width: 46px;
+        height: 46px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 14px;
+
+        font-size: 24px;
+
+        background:
+            linear-gradient(
+                135deg,
+                var(--green),
+                var(--green-dark)
+            );
+
+        box-shadow:
+            0 0 25px
+            rgba(57, 255, 136, 0.35);
+    }
+
+    .logo-text {
+        font-size: 17px;
+        font-weight: bold;
+        letter-spacing: 1px;
+        transition: opacity 0.2s;
+    }
+
+    .sidebar.collapsed .logo-text {
+        opacity: 0;
+        pointer-events: none;
+    }
+
+
+    /* ==============================
+       MENU
+    ============================== */
+
+    .menu {
+        flex: 1;
+        padding: 20px 12px;
+        overflow-y: auto;
+    }
+
+    .menu-title {
+        color: #63826e;
+        font-size: 11px;
+        font-weight: bold;
+        letter-spacing: 2px;
+        margin: 12px;
+        white-space: nowrap;
+    }
+
+    .sidebar.collapsed .menu-title {
+        opacity: 0;
+    }
+
+    .nav-link {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+
+        padding: 14px;
+        margin-bottom: 6px;
+
+        border-radius: 12px;
+
+        text-decoration: none;
+        color: #b7d1c0;
+
+        white-space: nowrap;
+
+        transition: 0.25s;
+    }
+
+    .nav-link:hover {
+        background: rgba(57, 255, 136, 0.12);
+        color: white;
+    }
+
+    .nav-link.active {
+        color: var(--green);
+
+        background:
+            linear-gradient(
+                90deg,
+                rgba(57, 255, 136, 0.18),
+                transparent
+            );
+
+        border-left: 3px solid var(--green);
+    }
+
+    .nav-icon {
+        min-width: 25px;
+        text-align: center;
+        font-size: 21px;
+    }
+
+    .nav-text {
+        font-size: 15px;
+    }
+
+    .sidebar.collapsed .nav-text {
+        opacity: 0;
+        pointer-events: none;
+    }
+
+
+    /* ==============================
+       SIDEBAR PROFILE
+    ============================== */
+
+    .sidebar-profile {
+        margin: 12px;
+        padding: 13px;
+
+        display: flex;
+        align-items: center;
+        gap: 12px;
+
+        border-radius: 15px;
+
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid var(--border);
+
+        overflow: hidden;
+    }
+
+    .avatar {
+        min-width: 42px;
+        height: 42px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 50%;
+
+        font-size: 20px;
+
+        background:
+            linear-gradient(
+                135deg,
+                #42db82,
+                #176a3a
+            );
+    }
+
+    .sidebar-profile-info {
+        white-space: nowrap;
+        overflow: hidden;
+    }
+
+    .sidebar-profile-info strong {
+        display: block;
+        font-size: 14px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .sidebar-profile-info span {
+        font-size: 12px;
+        color: var(--muted);
+    }
+
+    .sidebar.collapsed .sidebar-profile-info {
+        opacity: 0;
+    }
+
+
+    /* ==============================
+       LOGOUT
+    ============================== */
+
+    .logout-button {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+
+        padding: 14px;
+        margin: 12px;
+
+        border-radius: 12px;
+
+        color: #ff9191;
+        text-decoration: none;
+
+        background: rgba(255, 70, 70, 0.08);
+
+        white-space: nowrap;
+    }
+
+    .logout-button:hover {
+        background: rgba(255, 70, 70, 0.15);
+    }
+
+
+    /* ==============================
+       MAIN AREA
+    ============================== */
+
+    .main {
+        margin-left: 260px;
+        min-height: 100vh;
+        transition: margin-left 0.35s ease;
+    }
+
+    .main.expanded {
+        margin-left: 82px;
+    }
+
+
+    /* ==============================
+       TOPBAR
+    ============================== */
+
+    .topbar {
+        height: 82px;
+
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        padding: 0 35px;
+
+        position: sticky;
+        top: 0;
+        z-index: 500;
+
+        background: rgba(4, 19, 12, 0.75);
+        backdrop-filter: blur(15px);
+
+        border-bottom: 1px solid var(--border);
+    }
+
+    .left-top {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .menu-toggle {
+        width: 45px;
+        height: 45px;
+
+        border: none;
+        border-radius: 12px;
+
+        cursor: pointer;
+
+        font-size: 20px;
+        color: white;
+
+        background: rgba(255, 255, 255, 0.07);
+
+        transition: 0.2s;
+    }
+
+    .menu-toggle:hover {
+        background: rgba(57, 255, 136, 0.18);
+    }
+
+    .page-title h2 {
+        font-size: 20px;
+    }
+
+    .page-title p {
+        margin-top: 4px;
+        color: var(--muted);
+        font-size: 13px;
+    }
+
+    .token-box {
+        padding: 11px 18px;
+
+        border-radius: 14px;
+
+        color: var(--green);
+        font-weight: bold;
+
+        background: rgba(57, 255, 136, 0.1);
+
+        border:
+            1px solid
+            rgba(57, 255, 136, 0.3);
+    }
+
+
+    /* USER NOTIFICATIONS */
+    .notification-button {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        min-height: 44px;
+        padding: 10px 14px;
+        border-radius: 12px;
+        text-decoration: none;
+        color: var(--green);
+        font-weight: bold;
+        background: rgba(57, 255, 136, 0.09);
+        border: 1px solid rgba(57, 255, 136, 0.3);
+        white-space: nowrap;
+        transition: 0.2s;
+    }
+
+    .notification-button:hover {
+        background: rgba(57, 255, 136, 0.17);
+        transform: translateY(-1px);
+    }
+
+    .notification-count {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 20px;
+        height: 20px;
+        padding: 0 5px;
+        border-radius: 999px;
+        background: #ff5252;
+        color: #ffffff;
+        font-size: 11px;
+        font-weight: bold;
+    }
+
+    .nav-notification-count {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 19px;
+        height: 19px;
+        margin-left: auto;
+        padding: 0 4px;
+        border-radius: 999px;
+        background: #ff5252;
+        color: white;
+        font-size: 11px;
+        font-weight: bold;
+    }
+
+    .sidebar.collapsed .nav-notification-count {
+        position: absolute;
+        top: 3px;
+        right: 3px;
+        margin: 0;
+    }
+
+    .notification-nav {
+        position: relative;
+    }
+
+    .topbar-right {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 12px;
+    }
+
+    @media (max-width: 700px) {
+        .topbar-right {
+            gap: 7px;
+        }
+        .notification-button {
+            padding: 9px 10px;
+            font-size: 12px;
+        }
+    }
+
+
+    /* ==============================
+       CONTENT
+    ============================== */
+
+    .content {
+        max-width: 1500px;
+        margin: auto;
+        padding: 35px;
+    }
+
+
+    /* ==============================
+       HERO
+    ============================== */
+
+    .hero {
+        display: grid;
+        grid-template-columns: 1.5fr 1fr;
+        gap: 25px;
+
+        margin-bottom: 30px;
+    }
+
+    .welcome-card {
+        padding: 38px;
+
+        border-radius: 25px;
+
+        background:
+            linear-gradient(
+                135deg,
+                rgba(20, 92, 48, 0.85),
+                rgba(8, 39, 22, 0.9)
+            );
+
+        border: 1px solid var(--border);
+
+        position: relative;
+        overflow: hidden;
+    }
+
+    .welcome-card::after {
+        content: "🌍";
+
+        position: absolute;
+
+        right: 25px;
+        bottom: -45px;
+
+        font-size: 190px;
+        opacity: 0.1;
+    }
+
+    .welcome-card h1 {
+        position: relative;
+        z-index: 1;
+
+        font-size: 36px;
+        margin-bottom: 14px;
+    }
+
+    .welcome-card h1 span {
+        color: var(--green);
+    }
+
+    .welcome-card p {
+        position: relative;
+        z-index: 1;
+
+        max-width: 650px;
+
+        color: #b8d7c3;
+        line-height: 1.7;
+    }
+
+    .hero-actions {
+        position: relative;
+        z-index: 1;
+
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+
+        margin-top: 25px;
+    }
+
+    .primary-button,
+    .secondary-button {
+        padding: 13px 20px;
+
+        border-radius: 12px;
+
+        text-decoration: none;
+        font-weight: bold;
+
+        transition: 0.2s;
+    }
+
+    .primary-button {
+        color: #042012;
+
+        background:
+            linear-gradient(
+                135deg,
+                var(--green),
+                #21bd63
+            );
+    }
+
+    .secondary-button {
+        color: white;
+
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid var(--border);
+    }
+
+    .primary-button:hover,
+    .secondary-button:hover {
+        transform: translateY(-2px);
+    }
+
+
+    /* ==============================
+       ECO PROGRESS
+    ============================== */
+
+    .progress-card {
+        min-height: 310px;
+
+        border-radius: 25px;
+
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+
+        background: rgba(14, 54, 32, 0.75);
+        border: 1px solid var(--border);
+    }
+
+    .progress-title {
+        font-size: 18px;
+        margin-bottom: 20px;
+    }
+
+    .progress-ring {
+        width: 180px;
+        height: 180px;
+
+        border-radius: 50%;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        background:
+            conic-gradient(
+                var(--green) 0deg,
+                rgba(255, 255, 255, 0.08) 0deg
+            );
+
+        position: relative;
+
+        box-shadow:
+            0 0 30px
+            rgba(57, 255, 136, 0.15);
+    }
+
+    .progress-ring::before {
+        content: "";
+
+        width: 145px;
+        height: 145px;
+
+        position: absolute;
+
+        border-radius: 50%;
+
+        background: #0a2618;
+
+        box-shadow:
+            inset
+            0 0 25px
+            rgba(0, 0, 0, 0.6);
+    }
+
+    .progress-number {
+        position: relative;
+        z-index: 2;
+        text-align: center;
+    }
+
+    .progress-number strong {
+        display: block;
+
+        font-size: 36px;
+        color: var(--green);
+    }
+
+    .progress-number span {
+        font-size: 12px;
+        color: var(--muted);
+    }
+
+
+    /* ==============================
+       STATISTICS
+    ============================== */
+
+    .stats-grid {
+        display: grid;
+
+        grid-template-columns:
+            repeat(4, 1fr);
+
+        gap: 18px;
+
+        margin-bottom: 35px;
+    }
+
+    .stat-card {
+        padding: 23px;
+
+        border-radius: 20px;
+
+        background: var(--card);
+        border: 1px solid var(--border);
+
+        transition: 0.25s;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-6px);
+
+        border-color:
+            rgba(57, 255, 136, 0.5);
+    }
+
+    .stat-icon {
+        font-size: 28px;
+        margin-bottom: 15px;
+    }
+
+    .stat-number {
+        font-size: 27px;
+        font-weight: bold;
+
+        color: var(--green);
+    }
+
+    .stat-label {
+        margin-top: 6px;
+
+        font-size: 13px;
+        color: var(--muted);
+    }
+
+
+    /* ==============================
+       SECTION
+    ============================== */
+
+    .section-header {
+        margin: 35px 0 20px;
+    }
+
+    .section-header h2 {
+        font-size: 23px;
+    }
+
+    .section-header span {
+        color: var(--green);
+    }
+
+
+    /* ==============================
+       FEATURE CARDS
+    ============================== */
+
+    .feature-grid {
+        display: grid;
+
+        grid-template-columns:
+            repeat(auto-fit, minmax(240px, 1fr));
+
+        gap: 20px;
+    }
+
+    .feature-card {
+        padding: 25px;
+
+        min-height: 255px;
+
+        display: flex;
+        flex-direction: column;
+
+        border-radius: 22px;
+
+        background:
+            linear-gradient(
+                145deg,
+                rgba(19, 68, 40, 0.85),
+                rgba(7, 31, 19, 0.9)
+            );
+
+        border: 1px solid var(--border);
+
+        transition: 0.3s;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-7px);
+
+        border-color:
+            rgba(57, 255, 136, 0.45);
+
+        box-shadow:
+            0 18px 45px
+            rgba(0, 0, 0, 0.3);
+    }
+
+    .feature-icon {
+        width: 55px;
+        height: 55px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 16px;
+
+        font-size: 28px;
+
+        background:
+            rgba(57, 255, 136, 0.12);
+
+        margin-bottom: 18px;
+    }
+
+    .feature-card h3 {
+        margin-bottom: 10px;
+    }
+
+    .feature-card p {
+        flex: 1;
+
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1.6;
+    }
+
+    .feature-button {
+        margin-top: 20px;
+        padding: 12px;
+
+        border-radius: 11px;
+
+        text-align: center;
+
+        text-decoration: none;
+        font-weight: bold;
+
+        color: #062012;
+
+        background: var(--green);
+
+        transition: 0.2s;
+    }
+
+    .feature-button:hover {
+        transform: scale(1.02);
+
+        box-shadow:
+            0 0 20px
+            rgba(57, 255, 136, 0.3);
+    }
+
+    .camera {
+        color: white;
+
+        background:
+            linear-gradient(
+                135deg,
+                #58d9ff,
+                #268ad5
+            );
+    }
+
+
+    /* ==============================
+       PROFILE
+    ============================== */
+
+    .profile-card {
+        display: flex;
+        align-items: center;
+        gap: 25px;
+
+        padding: 30px;
+
+        border-radius: 25px;
+
+        background:
+            rgba(13, 52, 31, 0.8);
+
+        border: 1px solid var(--border);
+    }
+
+    .profile-avatar {
+        width: 90px;
+        height: 90px;
+
+        min-width: 90px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 50%;
+
+        font-size: 40px;
+
+        background:
+            linear-gradient(
+                135deg,
+                var(--green),
+                #116f39
+            );
+
+        box-shadow:
+            0 0 30px
+            rgba(57, 255, 136, 0.25);
+    }
+
+    .profile-details {
+        flex: 1;
+    }
+
+    .profile-details h2 {
+        margin-bottom: 8px;
+    }
+
+    .profile-details p {
+        margin: 7px 0;
+        color: var(--muted);
+    }
+
+    .profile-badge {
+        padding: 9px 15px;
+
+        border-radius: 20px;
+
+        color: var(--green);
+
+        font-size: 13px;
+
+        background:
+            rgba(57, 255, 136, 0.1);
+
+        border:
+            1px solid
+            rgba(57, 255, 136, 0.25);
+
+        white-space: nowrap;
+    }
+
+
+    /* ==============================
+       RESPONSIVE
+    ============================== */
+
+    @media (max-width: 1100px) {
+
+        .hero {
+            grid-template-columns: 1fr;
+        }
+
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+    }
+
+    @media (max-width: 700px) {
+
+        .sidebar {
+            width: 82px;
+        }
+
+        .main {
+            margin-left: 82px;
+        }
+
+        .sidebar .logo-text,
+        .sidebar .nav-text,
+        .sidebar .menu-title,
+        .sidebar-profile-info {
+            display: none;
+        }
+
+        .content {
+            padding: 20px;
+        }
+
+        .topbar {
+            padding: 0 18px;
+        }
+
+        .page-title {
+            display: none;
+        }
+
+        .token-box {
+            padding: 9px;
+            font-size: 12px;
+        }
+
+        .welcome-card {
+            padding: 25px;
+        }
+
+        .welcome-card h1 {
+            font-size: 27px;
+        }
+
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .profile-card {
+            flex-direction: column;
+            text-align: center;
+        }
+
+    }
+
+</style>
+
+</head>
+
+<body>
+
+<!-- ==============================
+     SIDEBAR
+============================== -->
+
+<aside class="sidebar" id="sidebar">
+
+<div class="sidebar-logo">
+
+    <div class="logo-circle">
+        🌍
+    </div>
+
+    <div class="logo-text">
+        ECO FUSION 360
+    </div>
+
+</div>
+
+
+<div class="menu">
+
+    <div class="menu-title">
+        MAIN MENU
+    </div>
+
+
+    <a href="#dashboard" class="nav-link active">
+
+        <span class="nav-icon">🏠</span>
+
+        <span class="nav-text">
+            Dashboard
+        </span>
+
+    </a>
+
+
+    <a href="{{ url_for('user_notifications') }}" class="nav-link notification-nav">
+
+        <span class="nav-icon">🔔</span>
+
+        <span class="nav-text">
+            Notifications
+        </span>
+
+        {% if unread_notifications|default(0) > 0 %}
+            <span class="nav-notification-count">{{ unread_notifications }}</span>
+        {% endif %}
+
+    </a>
+
+
+    <a
+        href="{{ url_for('plastic_camera') }}"
+        class="nav-link"
+    >
+
+        <span class="nav-icon">📷</span>
+
+        <span class="nav-text">
+            Camera Scanner
+        </span>
+
+    </a>
+
+
+    <a
+        href="{{ url_for('plastic_identification') }}"
+        class="nav-link"
+    >
+
+        <span class="nav-icon">♻️</span>
+
+        <span class="nav-text">
+            Identify Plastic
+        </span>
+
+    </a>
+
+
+    <a
+        href="{{ url_for('tree_game') }}"
+        class="nav-link"
+    >
+
+        <span class="nav-icon">🌳</span>
+
+        <span class="nav-text">
+            Tree Garden
+        </span>
+
+    </a>
+
+
+    <a
+        href="{{ url_for('reward_center') }}"
+        class="nav-link"
+    >
+
+        <span class="nav-icon">🎁</span>
+
+        <span class="nav-text">
+            Rewards
+        </span>
+
+    </a>
+
+
+    <a
+        href="{{ url_for('quiz') }}"
+        class="nav-link"
+    >
+
+        <span class="nav-icon">🧠</span>
+
+        <span class="nav-text">
+            Eco Quiz
+        </span>
+
+    </a>
+
+    <a
+        href="{{ url_for('ecosphere_ai') }}"
+        class="nav-link"
+    >
+        <span class="nav-icon">🌱</span>
+        <span class="nav-text">EcoSphere AI</span>
+    </a>
+
+
+</div>
+
+
+<!-- USER PROFILE -->
+
+<div class="sidebar-profile">
+
+    <div class="avatar">
+        👤
+    </div>
+
+    <div class="sidebar-profile-info">
+
+        <strong>
+            {{ user["full_name"] }}
+        </strong>
+
+        <span>
+            Eco Member
+        </span>
+
+    </div>
+
+</div>
+
+
+<!-- LOGOUT -->
+
+<a
+    href="{{ url_for('logout') }}"
+    class="logout-button"
+>
+
+    <span class="nav-icon">
+        🚪
+    </span>
+
+    <span class="nav-text">
+        Logout
+    </span>
+
+</a>
+
+</aside>
+
+<!-- ==============================
+     MAIN CONTENT
+============================== -->
+
+<main class="main" id="main">
+
+<!-- TOP BAR -->
+
+<header class="topbar">
+
+    <div class="left-top">
+
+        <button
+            class="menu-toggle"
+            onclick="toggleSidebar()"
+        >
+            ☰
+        </button>
+
+
+        <div class="page-title">
+
+            <h2>
+                Eco Dashboard
+            </h2>
+
+            <p>
+                Your journey towards a greener future
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="topbar-right">
+
+        <a href="{{ url_for('user_notifications') }}" class="notification-button" aria-label="Open notifications">
+            🔔 <span>Notifications</span>
+            {% if unread_notifications|default(0) > 0 %}
+                <span class="notification-count">{{ unread_notifications }}</span>
+            {% endif %}
+        </a>
+
+        <div class="token-box">
+
+            🟢
+
+            {{ progress["green_tokens"] if progress else 0 }}
+
+            Green Tokens
+
+        </div>
+
+    </div>
+
+</header>
+
+
+<!-- DASHBOARD CONTENT -->
+
+<div
+    class="content"
+    id="dashboard"
+>
+
+
+    <!-- HERO -->
+
+    <section class="hero">
+
+
+        <div class="welcome-card">
+
+            <h1>
+
+                Hello,
+
+                <span>
+                    {{ user["full_name"] }}
+                </span>
+
+                👋
+
+            </h1>
+
+
+            <p>
+
+                Welcome to your Eco Fusion 360 command center!
+                Identify plastics, capture recycling photos,
+                grow your virtual forest, earn Green Tokens,
+                and make a positive impact on our planet.
+
+            </p>
+
+
+            <div class="hero-actions">
+
+                <a
+                    href="{{ url_for('plastic_camera') }}"
+                    class="primary-button"
+                >
+                    📷 Scan Plastic
+                </a>
+
+
+                <a
+                    href="{{ url_for('tree_game') }}"
+                    class="secondary-button"
+                >
+                    🌳 Visit My Garden
+                </a>
+
+                <a
+                    href="{{ url_for('ecosphere_ai') }}"
+                    class="secondary-button"
+                >
+                    🌱 Ask EcoSphere AI
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <!-- ECO PROGRESS -->
+
+        <div class="progress-card">
+
+            <div class="progress-title">
+                🌿 Eco Progress
+            </div>
+
+
+            <div
+                class="progress-ring"
+                id="progressRing"
+            >
+
+                <div class="progress-number">
+
+                    <strong id="progressValue">
+                        0%
+                    </strong>
+
+                    <span>
+                        Eco Journey
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+    </section>
+
+
+    <!-- STATISTICS -->
+
+    <section class="stats-grid">
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                🟢
+            </div>
+
+            <div class="stat-number">
+
+                {{ progress["green_tokens"] if progress else 0 }}
+
+            </div>
+
+            <div class="stat-label">
+                Green Tokens
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                ♻️
+            </div>
+
+            <div class="stat-number">
+
+                {{ progress["plastic_kg"] if progress and "plastic_kg" in progress.keys() else 0 }}
+
+            </div>
+
+            <div class="stat-label">
+                Plastic Recycled (kg)
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                🌳
+            </div>
+
+            <div class="stat-number">
+
+                {{ progress["trees_saved"] if progress and "trees_saved" in progress.keys() else 0 }}
+
+            </div>
+
+            <div class="stat-label">
+                Trees Saved
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                💧
+            </div>
+
+            <div class="stat-number">
+
+                {{ progress["water_saved"] if progress and "water_saved" in progress.keys() else 0 }}
+
+            </div>
+
+            <div class="stat-label">
+                Water Saved (Litres)
+            </div>
+
+        </div>
+
+
+    </section>
+
+
+    <!-- ECO ACTIVITIES -->
+
+    <div class="section-header">
+
+        <h2>
+
+            🌿 Your
+
+            <span>
+                Eco Activities
+            </span>
+
+        </h2>
+
+    </div>
+
+
+    <section class="feature-grid">
+
+
+        <!-- CAMERA -->
+
+        <div class="feature-card">
+
+            <div class="feature-icon">
+                📷
+            </div>
+
+            <h3>
+                Plastic Camera Scanner
+            </h3>
+
+            <p>
+
+                Open your camera and capture a clear
+                photo of your plastic for verification.
+
+            </p>
+
+            <a
+                href="{{ url_for('plastic_camera') }}"
+                class="feature-button camera"
+            >
+                Open Camera
+            </a>
+
+        </div>
+
+
+        <!-- IDENTIFICATION -->
+
+        <div class="feature-card">
+
+            <div class="feature-icon">
+                ♻️
+            </div>
+
+            <h3>
+                Plastic Identification
+            </h3>
+
+            <p>
+
+                Identify your plastic type using
+                the Eco Fusion identification system.
+
+            </p>
+
+            <a
+                href="{{ url_for('plastic_identification') }}"
+                class="feature-button"
+            >
+                Identify Now
+            </a>
+
+        </div>
+
+
+        <!-- TREE GAME -->
+
+        <div class="feature-card">
+
+            <div class="feature-icon">
+                🌳
+            </div>
+
+            <h3>
+                Tree Garden
+            </h3>
+
+            <p>
+
+                Grow your virtual tree and build
+                your own beautiful eco garden.
+
+            </p>
+
+            <a
+                href="{{ url_for('tree_game') }}"
+                class="feature-button"
+            >
+                Enter Garden
+            </a>
+
+        </div>
+
+
+        <!-- REWARDS -->
+
+        <div class="feature-card">
+
+            <div class="feature-icon">
+                🎁
+            </div>
+
+            <h3>
+                Rewards Center
+            </h3>
+
+            <p>
+
+                Spend your Green Tokens and unlock
+                exciting eco-friendly rewards.
+
+            </p>
+
+            <a
+                href="{{ url_for('reward_center') }}"
+                class="feature-button"
+            >
+                View Rewards
+            </a>
+
+        </div>
+
+
+        <!-- QUIZ -->
+
+        <div class="feature-card">
+
+            <div class="feature-icon">
+                🧠
+            </div>
+
+            <h3>
+                Eco Quiz
+            </h3>
+
+            <p>
+
+                Test your environmental knowledge
+                and learn interesting new facts.
+
+            </p>
+
+            <a
+                href="{{ url_for('quiz') }}"
+                class="feature-button"
+            >
+                Start Quiz
+            </a>
+
+        </div>
+
+
+    </section>
+
+
+    <!-- PROFILE SECTION -->
+
+    <div class="section-header">
+
+        <h2>
+
+            👤 My
+
+            <span>
+                Eco Profile
+            </span>
+
+        </h2>
+
+    </div>
+
+
+    <section class="profile-card">
+
+
+        <div class="profile-avatar">
+            👤
+        </div>
+
+
+        <div class="profile-details">
+
+            <h2>
+                {{ user["full_name"] }}
+            </h2>
+
+
+            <p>
+
+                📧
+
+                {{ user["email"] }}
+
+            </p>
+
+
+            <p>
+
+                🌍 Eco Fusion 360 User
+
+            </p>
+
+        </div>
+
+
+        <div class="profile-badge">
+
+            🌱 ECO MEMBER
+
+        </div>
+
+
+    </section>
+
+
+</div>
+
+</main>
+
+<!-- ==============================
+     JAVASCRIPT
+============================== -->
+
+<script>
+
+
+/* ==============================
+   SIDEBAR TOGGLE
+============================== */
+
+function toggleSidebar() {
+
+    const sidebar =
+        document.getElementById("sidebar");
+
+    const main =
+        document.getElementById("main");
+
+
+    sidebar.classList.toggle(
+        "collapsed"
+    );
+
+
+    main.classList.toggle(
+        "expanded"
+    );
+
+}
+
+
+/* ==============================
+   GET VALUES FROM FLASK
+============================== */
+
+const greenTokens = Number(
+    "{{ progress['green_tokens'] if progress else 0 }}"
+);
+
+
+const plasticKg = Number(
+    "{{ progress['plastic_kg'] if progress and 'plastic_kg' in progress.keys() else 0 }}"
+);
+
+
+const treesSaved = Number(
+    "{{ progress['trees_saved'] if progress and 'trees_saved' in progress.keys() else 0 }}"
+);
+
+
+/* ==============================
+   ECO PROGRESS CALCULATION
+============================== */
+
+let ecoProgress = Math.min(
+
+    100,
+
+    Math.round(
+
+        (greenTokens / 20)
+
+        +
+
+        (plasticKg * 2)
+
+        +
+
+        (treesSaved * 3)
+
+    )
+
+);
+
+
+/* ==============================
+   PROGRESS ANIMATION
+============================== */
+
+const progressRing =
+    document.getElementById(
+        "progressRing"
+    );
+
+
+const progressValue =
+    document.getElementById(
+        "progressValue"
+    );
+
+
+let currentProgress = 0;
+
+
+const progressAnimation = setInterval(
+
+    function() {
+
+        if (
+
+            currentProgress >= ecoProgress
+
+        ) {
+
+            clearInterval(
+                progressAnimation
+            );
+
+            return;
+
+        }
+
+
+        currentProgress++;
+
+
+        progressValue.innerText =
+            currentProgress + "%";
+
+
+        const degree =
+            currentProgress * 3.6;
+
+
+        progressRing.style.background =
+
+            `conic-gradient(
+                #39ff88 0deg,
+                #39ff88 ${degree}deg,
+                rgba(255, 255, 255, 0.08) ${degree}deg,
+                rgba(255, 255, 255, 0.08) 360deg
+            )`;
+
+
+    },
+
+    18
+
+);
+
+
+</script>
+
+</body>
+
+</html>

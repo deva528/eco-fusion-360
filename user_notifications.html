@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eco Fusion 360 | Notifications</title>
+  <style>
+    :root { color-scheme: dark; --bg:#06140e; --panel:#0d2519; --line:#204b34; --green:#39ff88; --muted:#a8c6b4; }
+    * { box-sizing:border-box; }
+    body { margin:0; min-height:100vh; padding:28px 16px; font-family:Arial,sans-serif; color:#effff4; background:radial-gradient(circle at top right,#123b27 0,#06140e 48%); }
+    main { max-width:900px; margin:auto; }
+    header,.notice { border:1px solid var(--line); background:rgba(13,37,25,.96); border-radius:16px; padding:20px; }
+    header { margin-bottom:18px; }
+    h1 { margin:0 0 8px; color:var(--green); }
+    p { line-height:1.55; }
+    .muted { color:var(--muted); }
+    .notice { margin:14px 0; }
+    .notice h2 { font-size:1.08rem; margin:0 0 8px; }
+    .pill { display:inline-block; padding:5px 10px; border-radius:999px; background:#17482e; color:var(--green); font-size:.82rem; font-weight:bold; }
+    .date { font-size:.82rem; color:var(--muted); }
+    a { color:var(--green); }
+    .back { display:inline-block; margin:0 0 16px; text-decoration:none; border:1px solid var(--line); border-radius:9px; padding:10px 14px; }
+    .empty { text-align:center; padding:34px 18px; }
+  </style>
+</head>
+<body>
+<main>
+  <a class="back" href="{{ url_for('dashboard') }}">← Back to dashboard</a>
+  <header>
+    <h1>🔔 Your Notifications</h1>
+    <p class="muted">Coordinator decisions and remarks about your plastic submissions appear here.</p>
+  </header>
+  {% if notifications %}
+    {% for item in notifications %}
+      <section class="notice">
+        <h2>{{ item['title'] }}</h2>
+        <span class="pill">{{ item['status'] }}</span>
+        <p>{{ item['message'] }}</p>
+        {% if item['submission_id'] %}<p class="muted">Submission #{{ item['submission_id'] }}</p>{% endif %}
+        <div class="date">{{ item['created_at'] }}</div>
+      </section>
+    {% endfor %}
+  {% else %}
+    <section class="notice empty">
+      <h2>You're all caught up 🌱</h2>
+      <p class="muted">No coordinator review notifications yet. Once a coordinator reviews your submission, their status and remarks will appear here.</p>
+    </section>
+  {% endif %}
+</main>
+</body>
+</html>

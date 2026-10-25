@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Quiz Result</title>
+
+<style>
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #061b11, #0d3520);
+    color: white;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    width: 92%;
+    max-width: 550px;
+    background: rgba(255,255,255,0.08);
+    padding: 40px;
+    border-radius: 20px;
+    text-align: center;
+}
+
+h1 {
+    color: #72ff9f;
+}
+
+.score {
+    font-size: 60px;
+    font-weight: bold;
+    color: #72ff9f;
+    margin: 20px;
+}
+
+.cards {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+}
+
+.card {
+    background: #123d24;
+    padding: 20px;
+    border-radius: 12px;
+}
+
+.card h2 {
+    color: #72ff9f;
+}
+
+a {
+    display: block;
+    margin-top: 25px;
+    padding: 14px;
+    background: #19a852;
+    color: white;
+    text-decoration: none;
+    border-radius: 10px;
+    font-weight: bold;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>
+        🏆 Quiz Completed!
+    </h1>
+
+    <div class="score">
+        {{ score }}
+    </div>
+
+    <p>
+        Green Tokens / Quiz Score
+    </p>
+
+    <div class="cards">
+
+        <div class="card">
+
+            <h2>✅ Correct</h2>
+
+            <h1>
+                {{ correct }}
+            </h1>
+
+        </div>
+
+        <div class="card">
+
+            <h2>❌ Wrong</h2>
+
+            <h1>
+                {{ wrong }}
+            </h1>
+
+        </div>
+
+    </div>
+
+    <a href="{{ url_for('dashboard') }}">
+        🌱 Back to Dashboard
+    </a>
+
+</div>
+
+</body>
+
+</html>

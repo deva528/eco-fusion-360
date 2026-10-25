@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Registration</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            background: #071a12;
+            color: white;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .box {
+            max-width: 450px;
+            margin: auto;
+            background: #103c27;
+            padding: 30px;
+            border-radius: 18px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            box-sizing: border-box;
+            border-radius: 8px;
+            border: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 13px;
+            margin-top: 12px;
+            background: #42e879;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        .error {
+            color: #ff7777;
+        }
+
+        a {
+            color: #66ff99;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="box">
+
+    <h1>🌱 Create User Account</h1>
+
+    {% if error %}
+        <p class="error">{{ error }}</p>
+    {% endif %}
+
+    <form method="POST">
+
+        <input
+            name="full_name"
+            placeholder="Full Name"
+            required
+        >
+
+        <input
+            type="email"
+            name="email"
+            placeholder="Email"
+            required
+        >
+
+        <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            required
+        >
+
+        <input
+            type="password"
+            name="confirm_password"
+            placeholder="Confirm Password"
+            required
+        >
+
+        <button type="submit">
+            Create Account
+        </button>
+
+    </form>
+
+    <p>
+        Already registered?
+        <a href="{{ url_for('user_login') }}">
+            Login
+        </a>
+    </p>
+
+</div>
+
+</body>
+</html>
