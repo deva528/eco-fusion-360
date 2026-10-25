@@ -1,0 +1,1302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Eco Fusion 360 - Plastic Identification</title>
+
+<style>
+
+:root{
+    --bg:#06130d;
+    --card:#0c2117;
+    --card2:#102c1d;
+    --green:#39e681;
+    --green2:#1bbd63;
+    --text:#effff5;
+    --muted:#9fc1ad;
+    --border:#1c5033;
+    --danger:#ffcc66;
+}
+
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    background:
+        radial-gradient(
+            circle at top,
+            #123d26 0,
+            #06130d 42%,
+            #030a07 100%
+        );
+    color:var(--text);
+    font-family:Arial,Helvetica,sans-serif;
+    min-height:100vh;
+}
+
+.container{
+    width:min(1050px,94%);
+    margin:auto;
+    padding:28px 0 50px;
+}
+
+/* TOP BAR */
+
+.top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:16px;
+    margin-bottom:24px;
+}
+
+.brand{
+    font-size:28px;
+    font-weight:800;
+}
+
+.back{
+    color:var(--text);
+    text-decoration:none;
+    border:1px solid var(--border);
+    padding:10px 16px;
+    border-radius:12px;
+    background:#0a1d14;
+}
+
+/* HERO */
+
+.hero{
+    text-align:center;
+    margin:18px 0 28px;
+}
+
+.hero h1{
+    font-size:clamp(30px,5vw,46px);
+    margin:0 0 8px;
+}
+
+.hero p{
+    color:var(--muted);
+    margin:0;
+}
+
+/* STEPS */
+
+.steps{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:12px;
+    margin-bottom:20px;
+}
+
+.step{
+    padding:14px;
+    border-radius:14px;
+    background:#091b12;
+    color:var(--muted);
+    border:1px solid var(--border);
+    text-align:center;
+    font-size:14px;
+}
+
+.step.active{
+    color:var(--text);
+    border-color:var(--green);
+    box-shadow:0 0 18px rgba(57,230,129,.12);
+}
+
+/* CARD */
+
+.card{
+    background:rgba(12,33,23,.94);
+    border:1px solid var(--border);
+    border-radius:22px;
+    padding:25px;
+    box-shadow:0 15px 45px rgba(0,0,0,.25);
+    margin-bottom:20px;
+}
+
+/* CHOICES */
+
+.choice-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:16px;
+}
+
+.choice{
+    border:1px solid var(--border);
+    background:var(--card2);
+    border-radius:16px;
+    padding:18px;
+    cursor:pointer;
+    text-align:center;
+    transition:.2s;
+    font-size:17px;
+}
+
+.choice:hover,
+.choice.selected{
+    border-color:var(--green);
+    transform:translateY(-2px);
+    box-shadow:0 0 18px rgba(57,230,129,.12);
+}
+
+input[type=radio]{
+    display:none;
+}
+
+/* SECTION */
+
+.section-title{
+    font-size:22px;
+    margin:0 0 16px;
+}
+
+/* QUESTIONS */
+
+.question{
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:18px;
+    margin:14px 0;
+    background:#091b12;
+}
+
+.question h3{
+    margin:0 0 12px;
+    font-size:18px;
+}
+
+.options{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:10px;
+}
+
+.option{
+    display:block;
+    border:1px solid #285d41;
+    border-radius:12px;
+    padding:12px;
+    background:#0c2418;
+    cursor:pointer;
+    color:#dff8e9;
+}
+
+.option:has(input:checked){
+    border-color:var(--green);
+    background:#123b25;
+}
+
+.option input{
+    margin-right:8px;
+    accent-color:var(--green);
+}
+
+/* BUTTONS */
+
+.btn{
+    border:0;
+    border-radius:14px;
+    padding:14px 22px;
+    font-size:16px;
+    font-weight:700;
+    cursor:pointer;
+    background:linear-gradient(
+        135deg,
+        var(--green),
+        var(--green2)
+    );
+    color:#031008;
+}
+
+.btn.secondary{
+    background:#10291c;
+    color:var(--text);
+    border:1px solid var(--border);
+}
+
+.actions{
+    display:flex;
+    justify-content:center;
+    gap:12px;
+    flex-wrap:wrap;
+    margin-top:22px;
+}
+
+/* ERROR */
+
+.error{
+    color:var(--danger);
+    text-align:center;
+    margin-top:12px;
+    display:none;
+}
+
+/* RESULT */
+
+.result{
+    text-align:center;
+}
+
+.result-main{
+    font-size:32px;
+    font-weight:800;
+    margin:10px 0;
+}
+
+.accuracy{
+    font-size:22px;
+    color:var(--green);
+    font-weight:700;
+}
+
+.scores{
+    max-width:620px;
+    margin:20px auto 0;
+    text-align:left;
+}
+
+.score-row{
+    display:flex;
+    justify-content:space-between;
+    padding:11px 14px;
+    border-bottom:1px solid #1b3e2b;
+}
+
+.note{
+    font-size:13px;
+    color:var(--muted);
+    margin-top:12px;
+}
+
+.hidden{
+    display:none!important;
+}
+
+/* MOBILE */
+
+@media(max-width:700px){
+
+    .container{
+        padding-top:15px;
+    }
+
+    .top{
+        align-items:flex-start;
+    }
+
+    .brand{
+        font-size:21px;
+    }
+
+    .choice-grid,
+    .options,
+    .steps{
+        grid-template-columns:1fr;
+    }
+
+    .card{
+        padding:17px;
+    }
+
+    .question{
+        padding:14px;
+    }
+
+    .back{
+        padding:8px 12px;
+    }
+
+    .hero h1{
+        font-size:31px;
+    }
+}
+
+</style>
+</head>
+
+
+<body>
+
+<div class="container">
+
+    <!-- TOP BAR -->
+
+    <div class="top">
+
+        <div class="brand">
+            🌍 Eco Fusion 360
+        </div>
+
+        <a
+            class="back"
+            href="{{ url_for('dashboard') }}"
+        >
+            ← Dashboard
+        </a>
+
+    </div>
+
+
+    <!-- HERO -->
+
+    <div class="hero">
+
+        <h1>
+            ♻ Plastic Identification
+        </h1>
+
+        <p>
+            AI Based Plastic Identification System
+        </p>
+
+    </div>
+
+
+    <!-- STEPS -->
+
+    <div class="steps">
+
+        <div
+            class="step active"
+            id="step1"
+        >
+            1. Language & Process
+        </div>
+
+        <div
+            class="step"
+            id="step2"
+        >
+            2. Properties
+        </div>
+
+        <div
+            class="step"
+            id="step3"
+        >
+            3. Result
+        </div>
+
+    </div>
+
+
+    <!-- START CARD -->
+
+    <section
+        class="card"
+        id="startCard"
+    >
+
+        <h2 class="section-title">
+            Choose Language
+        </h2>
+
+
+        <div class="choice-grid">
+
+            <label class="choice selected">
+
+                <input
+                    type="radio"
+                    name="language"
+                    value="English"
+                    checked
+                >
+
+                English
+
+            </label>
+
+
+            <label class="choice">
+
+                <input
+                    type="radio"
+                    name="language"
+                    value="Tamil"
+                >
+
+                தமிழ்
+
+            </label>
+
+        </div>
+
+
+        <h2
+            class="section-title"
+            style="margin-top:28px"
+        >
+            Select Plastic Processing Method
+        </h2>
+
+
+        <div class="choice-grid">
+
+            <label class="choice">
+
+                <input
+                    type="radio"
+                    name="process"
+                    value="Pyrolysis"
+                >
+
+                🔥 Pyrolysis
+
+            </label>
+
+
+            <label class="choice">
+
+                <input
+                    type="radio"
+                    name="process"
+                    value="Cryolysis"
+                >
+
+                ❄ Cryolysis
+
+            </label>
+
+        </div>
+
+
+        <div class="actions">
+
+            <button
+                class="btn"
+                type="button"
+                onclick="startQuestions()"
+            >
+                Continue →
+            </button>
+
+        </div>
+
+
+        <div
+            class="error"
+            id="startError"
+        >
+            Please select a processing method.
+        </div>
+
+    </section>
+
+
+    <!-- QUESTION CARD -->
+
+    <section
+        class="card hidden"
+        id="questionCard"
+    >
+
+        <h2 class="section-title">
+            Plastic Identification Questions
+        </h2>
+
+
+        <form id="plasticForm">
+
+            <div id="questions"></div>
+
+
+            <div class="actions">
+
+                <button
+                    class="btn secondary"
+                    type="button"
+                    onclick="goBack()"
+                >
+                    ← Back
+                </button>
+
+
+                <button
+                    class="btn"
+                    type="submit"
+                >
+                    Identify Plastic ♻
+                </button>
+
+            </div>
+
+
+            <div
+                class="error"
+                id="questionError"
+            >
+                Please answer all six questions.
+            </div>
+
+        </form>
+
+    </section>
+
+
+    <!-- RESULT CARD -->
+
+    <section
+        class="card hidden"
+        id="resultCard"
+    >
+
+        <div class="result">
+
+            <div style="font-size:50px">
+                ♻
+            </div>
+
+
+            <h2 class="section-title">
+                Plastic Identification Result
+            </h2>
+
+
+            <p id="processResult"></p>
+
+
+            <div
+                class="result-main"
+                id="plasticResult"
+            ></div>
+
+
+            <div
+                class="accuracy"
+                id="accuracyResult"
+            ></div>
+
+
+            <div
+                class="scores"
+                id="scoreDetails"
+            ></div>
+
+
+            <p class="note">
+                The matching method follows the property
+                database and six-question scoring system
+                from the original Eco Fusion 360 module.
+            </p>
+
+
+            <div class="actions">
+
+                <button
+                    class="btn secondary"
+                    type="button"
+                    onclick="resetModule()"
+                >
+                    ↻ Test Another Plastic
+                </button>
+
+
+                <a
+                    class="btn"
+                    href="{{ url_for('plastic_camera') }}"
+                    style="text-decoration:none"
+                >
+                    📷 Continue to Camera Verification
+                </a>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</div>
+
+
+<script>
+
+/* =====================================================
+   PLASTIC DATABASE
+===================================================== */
+
+const plasticDatabase = {
+
+    "PET": {
+
+        flexibility:"No flexibility",
+
+        rigidity:"Moderately hard",
+
+        transparent:"Highly transparent",
+
+        stretch:"Cannot stretch",
+
+        water:"Sinks quickly",
+
+        usage:"Not used as cover"
+
+    },
+
+
+    "HDPE": {
+
+        flexibility:"Normal flexibility",
+
+        rigidity:"Super hard",
+
+        transparent:"Opaque",
+
+        stretch:"Slight stretch",
+
+        water:"Floats easily",
+
+        usage:"Commonly used as cover"
+
+    },
+
+
+    "PVC": {
+
+        flexibility:"Moderate flexibility",
+
+        rigidity:"Moderately hard",
+
+        transparent:"Slightly transparent",
+
+        stretch:"Moderate stretch",
+
+        water:"Sinks quickly",
+
+        usage:"Sometimes used as cover"
+
+    },
+
+
+    "LDPE": {
+
+        flexibility:"Super flexible",
+
+        rigidity:"Very soft",
+
+        transparent:"Transparent",
+
+        stretch:"High stretch",
+
+        water:"Floats",
+
+        usage:"Mainly used as cover"
+
+    },
+
+
+    "PP": {
+
+        flexibility:"Normal flexibility",
+
+        rigidity:"Normal hardness",
+
+        transparent:"Slightly transparent",
+
+        stretch:"Slight stretch",
+
+        water:"Floats easily",
+
+        usage:"Commonly used as cover"
+
+    },
+
+
+    "PS": {
+
+        flexibility:"No flexibility",
+
+        rigidity:"Super hard",
+
+        transparent:"Transparent",
+
+        stretch:"Cannot stretch",
+
+        water:"Sinks quickly",
+
+        usage:"Not used as cover"
+
+    },
+
+
+    "PC / ABS / PLA": {
+
+        flexibility:"Moderate flexibility",
+
+        rigidity:"Moderately hard",
+
+        transparent:"Opaque",
+
+        stretch:"Moderate stretch",
+
+        water:"Depends on material",
+
+        usage:"Sometimes used as cover"
+
+    },
+
+
+    "Mixed Plastic": {
+
+        flexibility:"Unknown",
+
+        rigidity:"Unknown",
+
+        transparent:"Unknown",
+
+        stretch:"Unknown",
+
+        water:"Unknown",
+
+        usage:"Unknown"
+
+    }
+
+};
+
+
+/* =====================================================
+   QUESTIONS
+===================================================== */
+
+const questions = [
+
+    [
+        "flexibility",
+        "How flexible is the plastic?",
+        [
+            "No flexibility",
+            "Normal flexibility",
+            "Moderate flexibility",
+            "Super flexible"
+        ]
+    ],
+
+
+    [
+        "rigidity",
+        "How rigid/hard is the plastic?",
+        [
+            "Very soft",
+            "Normal hardness",
+            "Moderately hard",
+            "Super hard"
+        ]
+    ],
+
+
+    [
+        "transparent",
+        "How transparent is the plastic?",
+        [
+            "Opaque",
+            "Slightly transparent",
+            "Transparent",
+            "Highly transparent"
+        ]
+    ],
+
+
+    [
+        "stretch",
+        "How easily can the plastic stretch?",
+        [
+            "Cannot stretch",
+            "Slight stretch",
+            "Moderate stretch",
+            "High stretch"
+        ]
+    ],
+
+
+    [
+        "water",
+        "What happens when placed in water?",
+        [
+            "Sinks quickly",
+            "Slowly sinks",
+            "Floats",
+            "Floats easily"
+        ]
+    ],
+
+
+    [
+        "usage",
+        "How is this plastic commonly used?",
+        [
+            "Not used as cover",
+            "Sometimes used as cover",
+            "Commonly used as cover",
+            "Mainly used as cover"
+        ]
+    ]
+
+];
+
+
+let process = "";
+
+
+/* =====================================================
+   START QUESTIONS
+===================================================== */
+
+function startQuestions(){
+
+    const selected =
+        document.querySelector(
+            'input[name="process"]:checked'
+        );
+
+
+    if(!selected){
+
+        document
+            .getElementById("startError")
+            .style.display = "block";
+
+        return;
+    }
+
+
+    document
+        .getElementById("startError")
+        .style.display = "none";
+
+
+    process = selected.value;
+
+
+    const box =
+        document.getElementById("questions");
+
+
+    box.innerHTML = "";
+
+
+    questions.forEach(
+        ([key,text,options],index)=>{
+
+            const question =
+                document.createElement("div");
+
+
+            question.className = "question";
+
+
+            let html = `
+                <h3>
+                    ${index + 1}. ${text}
+                </h3>
+
+                <div class="options">
+            `;
+
+
+            options.forEach(option=>{
+
+                html += `
+
+                    <label class="option">
+
+                        <input
+                            required
+                            type="radio"
+                            name="${key}"
+                            value="${option}"
+                        >
+
+                        ${option}
+
+                    </label>
+
+                `;
+
+            });
+
+
+            html += `
+                </div>
+            `;
+
+
+            question.innerHTML = html;
+
+
+            box.appendChild(question);
+
+        }
+    );
+
+
+    document
+        .getElementById("startCard")
+        .classList.add("hidden");
+
+
+    document
+        .getElementById("questionCard")
+        .classList.remove("hidden");
+
+
+    document
+        .getElementById("step1")
+        .classList.remove("active");
+
+
+    document
+        .getElementById("step2")
+        .classList.add("active");
+
+
+    window.scrollTo({
+        top:0,
+        behavior:"smooth"
+    });
+
+}
+
+
+/* =====================================================
+   GO BACK
+===================================================== */
+
+function goBack(){
+
+    document
+        .getElementById("questionCard")
+        .classList.add("hidden");
+
+
+    document
+        .getElementById("startCard")
+        .classList.remove("hidden");
+
+
+    document
+        .getElementById("step2")
+        .classList.remove("active");
+
+
+    document
+        .getElementById("step1")
+        .classList.add("active");
+
+}
+
+
+/* =====================================================
+   IDENTIFY PLASTIC
+===================================================== */
+
+document
+    .getElementById("plasticForm")
+    .addEventListener(
+        "submit",
+        function(event){
+
+            event.preventDefault();
+
+
+            const data =
+                new FormData(this);
+
+
+            const answers = {};
+
+
+            questions.forEach(
+                question=>{
+
+                    answers[question[0]] =
+                        data.get(question[0]);
+
+                }
+            );
+
+
+            /* CHECK ALL ANSWERS */
+
+            if(
+                questions.some(
+                    question =>
+                        !answers[question[0]]
+                )
+            ){
+
+                document
+                    .getElementById("questionError")
+                    .style.display = "block";
+
+                return;
+            }
+
+
+            document
+                .getElementById("questionError")
+                .style.display = "none";
+
+
+            /* SCORE PLASTICS */
+
+            const scores = {};
+
+
+            for(
+                const [
+                    plastic,
+                    properties
+                ]
+                of Object.entries(plasticDatabase)
+            ){
+
+                let score = 0;
+
+
+                for(
+                    const key
+                    of Object.keys(answers)
+                ){
+
+                    if(
+                        answers[key] ===
+                        properties[key]
+                    ){
+
+                        score++;
+
+                    }
+
+                }
+
+
+                scores[plastic] = score;
+
+            }
+
+
+            /* FIND HIGHEST SCORE */
+
+            const bestPlastic =
+                Object.keys(scores)
+                    .reduce(
+                        (a,b)=>
+                            scores[a] >= scores[b]
+                            ? a
+                            : b
+                    );
+
+
+            const bestScore =
+                scores[bestPlastic];
+
+
+            /* ACCURACY */
+
+            const accuracy =
+                (bestScore / 6) * 100;
+
+            // Pass the identification result into the camera submission page.
+            const normalizedPlastic =
+                bestPlastic === "PC / ABS / PLA" ? "PC/ABS/PLA" :
+                bestPlastic === "Mixed Plastic" ? "Mixed" :
+                bestPlastic;
+            sessionStorage.setItem("ecoPlasticType", normalizedPlastic);
+            sessionStorage.setItem("ecoPlasticProcess", process);
+            sessionStorage.setItem("ecoPlasticAccuracy", accuracy.toFixed(1));
+
+
+            /* DISPLAY RESULT */
+
+            document
+                .getElementById("processResult")
+                .textContent =
+                    "Process Selected: " +
+                    process;
+
+
+            document
+                .getElementById("plasticResult")
+                .textContent =
+                    "Detected Plastic: " +
+                    bestPlastic;
+
+
+            document
+                .getElementById("accuracyResult")
+                .textContent =
+                    "Matching Accuracy: " +
+                    accuracy.toFixed(1) +
+                    "%";
+
+
+            /* SCORE DETAILS */
+
+            document
+                .getElementById("scoreDetails")
+                .innerHTML = `
+
+                    <h3>
+                        Plastic Score Details
+                    </h3>
+
+                    ${
+                        Object.entries(scores)
+                            .map(
+                                ([plastic,score]) => `
+
+                                    <div class="score-row">
+
+                                        <span>
+                                            ${plastic}
+                                        </span>
+
+                                        <strong>
+                                            ${score}/6
+                                        </strong>
+
+                                    </div>
+
+                                `
+                            )
+                            .join("")
+                    }
+
+                `;
+
+
+            /* CHANGE SCREEN */
+
+            document
+                .getElementById("questionCard")
+                .classList.add("hidden");
+
+
+            document
+                .getElementById("resultCard")
+                .classList.remove("hidden");
+
+
+            document
+                .getElementById("step2")
+                .classList.remove("active");
+
+
+            document
+                .getElementById("step3")
+                .classList.add("active");
+
+
+            window.scrollTo({
+                top:0,
+                behavior:"smooth"
+            });
+
+        }
+    );
+
+
+/* =====================================================
+   RESET
+===================================================== */
+
+function resetModule(){
+
+    document
+        .getElementById("resultCard")
+        .classList.add("hidden");
+
+
+    document
+        .getElementById("startCard")
+        .classList.remove("hidden");
+
+
+    document
+        .getElementById("step3")
+        .classList.remove("active");
+
+
+    document
+        .getElementById("step1")
+        .classList.add("active");
+
+
+    document
+        .querySelectorAll(
+            'input[name="process"]'
+        )
+        .forEach(
+            input => input.checked = false
+        );
+
+
+    process = "";
+
+
+    window.scrollTo({
+        top:0,
+        behavior:"smooth"
+    });
+
+}
+
+
+/* =====================================================
+   CHOICE SELECTION
+===================================================== */
+
+document
+    .querySelectorAll(".choice")
+    .forEach(choice=>{
+
+        choice.addEventListener(
+            "click",
+            ()=>{
+
+                const name =
+                    choice.querySelector(
+                        "input"
+                    ).name;
+
+
+                document
+                    .querySelectorAll(
+                        'input[name="' +
+                        name +
+                        '"]'
+                    )
+                    .forEach(
+                        input =>
+                            input
+                                .parentElement
+                                .classList
+                                .remove("selected")
+                    );
+
+
+                choice.classList.add("selected");
+
+
+                choice.querySelector(
+                    "input"
+                ).checked = true;
+
+            }
+        );
+
+    });
+
+</script>
+
+</body>
+</html>

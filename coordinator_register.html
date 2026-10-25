@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Coordinator Registration</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            background: #071a12;
+            color: white;
+            text-align: center;
+            padding: 30px;
+        }
+
+        .box {
+            max-width: 550px;
+            margin: auto;
+            background: #103c27;
+            padding: 30px;
+            border-radius: 18px;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            margin: 7px 0;
+            box-sizing: border-box;
+            border-radius: 8px;
+            border: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 13px;
+            background: #42e879;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .error {
+            color: #ff7777;
+        }
+
+        a {
+            color: #66ff99;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="box">
+
+    <h1>♻️ Coordinator Registration</h1>
+
+    <p>
+        Register your recycling centre.
+        Your account will require Admin approval.
+    </p>
+
+    {% if error %}
+        <p class="error">{{ error }}</p>
+    {% endif %}
+
+    <form method="POST">
+
+        <input
+            name="full_name"
+            placeholder="Coordinator Full Name"
+            required
+        >
+
+        <input
+            type="email"
+            name="email"
+            placeholder="Email"
+            required
+        >
+
+        <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            required
+        >
+
+        <input
+            type="password"
+            name="confirm_password"
+            placeholder="Confirm Password"
+            required
+        >
+
+        <input
+            name="recycle_center_name"
+            placeholder="Recycling Centre Name"
+        >
+
+        <input
+            name="recycle_center_id"
+            placeholder="Recycling Centre ID"
+        >
+
+        <input
+            name="district"
+            placeholder="District"
+        >
+
+        <input
+            name="mobile"
+            placeholder="Mobile Number"
+        >
+
+        <textarea
+            name="address"
+            placeholder="Recycling Centre Address"
+            rows="4"
+        ></textarea>
+
+        <button type="submit">
+            Submit Coordinator Registration
+        </button>
+
+    </form>
+
+    <p>
+        Already registered?
+        <a href="{{ url_for('coordinator_login') }}">
+            Coordinator Login
+        </a>
+    </p>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Weekly Eco Quiz</title>
+
+<style>
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #071b12;
+    color: white;
+}
+
+.container {
+    width: 92%;
+    max-width: 900px;
+    margin: auto;
+    padding: 35px 0;
+}
+
+h1 {
+    color: #72ff9f;
+    text-align: center;
+}
+
+.question {
+    background: #0d2b1b;
+    padding: 25px;
+    margin-top: 20px;
+    border-radius: 15px;
+}
+
+.option {
+    display: block;
+    background: #143b25;
+    padding: 14px;
+    margin-top: 10px;
+    border-radius: 9px;
+    cursor: pointer;
+}
+
+.option:hover {
+    background: #1d5d37;
+}
+
+input[type="radio"] {
+    margin-right: 10px;
+}
+
+button {
+    width: 100%;
+    margin-top: 30px;
+    padding: 15px;
+    background: #19a852;
+    border: none;
+    color: white;
+    border-radius: 10px;
+    font-size: 17px;
+    font-weight: bold;
+}
+
+.back {
+    display: block;
+    text-align: center;
+    margin-top: 20px;
+    color: #72ff9f;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>
+        🧠 Weekly Eco Quiz
+    </h1>
+
+    <p style="text-align:center;">
+        Correct answer: +5 Green Tokens<br>
+        Wrong answer: -2 points
+    </p>
+
+    <form method="POST"
+          action="{{ url_for('submit_quiz') }}">
+
+        {% if questions %}
+
+        {% for question in questions %}
+
+        <div class="question">
+
+            <h2>
+                {{ loop.index }}.
+                {{ question["question"] }}
+            </h2>
+
+            <label class="option">
+
+                <input
+                    type="radio"
+                    name="question_{{ question['id'] }}"
+                    value="A"
+                >
+
+                A. {{ question["option_a"] }}
+
+            </label>
+
+            <label class="option">
+
+                <input
+                    type="radio"
+                    name="question_{{ question['id'] }}"
+                    value="B"
+                >
+
+                B. {{ question["option_b"] }}
+
+            </label>
+
+            <label class="option">
+
+                <input
+                    type="radio"
+                    name="question_{{ question['id'] }}"
+                    value="C"
+                >
+
+                C. {{ question["option_c"] }}
+
+            </label>
+
+            <label class="option">
+
+                <input
+                    type="radio"
+                    name="question_{{ question['id'] }}"
+                    value="D"
+                >
+
+                D. {{ question["option_d"] }}
+
+            </label>
+
+        </div>
+
+        {% endfor %}
+
+        <button type="submit">
+            🏆 Submit Quiz
+        </button>
+
+        {% else %}
+
+        <div class="question">
+
+            <h2>
+                No quiz questions available yet.
+            </h2>
+
+            <p>
+                An administrator needs to add questions first.
+            </p>
+
+        </div>
+
+        {% endif %}
+
+    </form>
+
+    <a class="back"
+       href="{{ url_for('dashboard') }}">
+
+        ← Back to Dashboard
+
+    </a>
+
+</div>
+
+</body>
+</html>
